@@ -1,3 +1,5 @@
+
+import React from 'react'
 import { shallow } from 'enzyme'
 import Congrats from './Congrats'
 import { findByTestAttr, checkProps } from '../test/testUtils'
@@ -15,4 +17,17 @@ test('renders without error', () => {
 
 test('does not throw warning with expected props', () => {
     checkProps(Input, { secretWord: 'party'})
+})
+
+describe('state controlled input field', () => {
+    test('state updates with value of input box upon change', () => {
+        const mockSetCurrentGuess = jest.fn();
+        React.useState = jest.fn(() => ["", mockSetCurrentGuess]) // mock function. first element in the array is a string/state, second element is the updater function
+
+        const wrapper = setup();
+        const inputBox = findByTestAttr(wrapper, 'input-box');
+        const mockEvent = { target: {value: 'train'} };
+        inputBox.simulate('change', mockEvent)
+        expect(mockSetCurrentGuess).toHaveBeenCalledWith('train')
+    })
 })
